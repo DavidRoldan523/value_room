@@ -5,6 +5,8 @@ from rest_framework.authtoken import views
 urlpatterns = [
     #Apps
     url(r'^api/v1/amazon/', include('amazon.urls')),
+    url(r'^api/v1/tripadvisor/', include('tripadvisor.urls')),
+    url(r'^api/v1/facebook/', include('facebook.urls')),
     
     # Token
     url(r'^admin/', admin.site.urls),
