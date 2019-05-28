@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^api/v1/amazon/', include('amazon.urls')),
     url(r'^api/v1/tripadvisor/', include('tripadvisor.urls')),
     url(r'^api/v1/facebook/', include('facebook.urls')),
+    url(r'^api/v1/instagram/', include('instagram.urls')),
     
     # Token
     url(r'^admin/', admin.site.urls),
