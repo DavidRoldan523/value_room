@@ -4,19 +4,15 @@ import requests as requests_python
 from rest_framework import status
 
 @api_view(['POST'])
-def get_reviews_video(request):
+def get_comments(request):
     try:
         token = request.data.get('token')
-        page_id = request.data.get('page_id')
-        fields = request.data.get('fields') #id,created_time
-        since = request.data.get('since')
-        until = request.data.get('until')
-        url = f"https://graph.facebook.com/v3.3/{page_id}/posts" \
+        account_ig_id = request.data.get('account_ig_id')
+        fields = request.data.get('fields') #id,caption,username,media_url,media_type,timestamp,like_count
+        url = f"https://graph.facebook.com/v3.3/{account_ig_id}/media" \
             f"?access_token={token}" \
-            f"&fields={fields}" \
-            f"&since={since}&until={until}&limit=100"
+            f"&fields=comments{{text}},{fields}&limit=500"
         response = requests_python.get(url)
         return Response(response.json(), status.HTTP_200_OK)
     except Exception:
         return Response({'Error':'URL incorrecto'}, status.HTTP_400_BAD_REQUEST)
-
