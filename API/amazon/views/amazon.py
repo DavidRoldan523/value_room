@@ -1,6 +1,6 @@
 import json
-import urllib3
 import random
+import urllib3
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,8 +10,11 @@ from requests import get
 from dateutil import parser as dateparser_to_html
 import concurrent.futures
 
+
+#GLOBAL VARIABLES
 review_total_pages = []
 headers = {}
+
 
 def get_random_user_agent():
     user_agent_list = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
@@ -32,6 +35,43 @@ def get_random_user_agent():
                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
                        'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36']
     return random.choice(user_agent_list)
+
+
+def get_header(asin):
+    try:
+        global headers
+        ratings_dict = {}
+        amazon_url = 'https://www.amazon.com/product-reviews/' + asin + '/ref=cm_cr_arp_d_paging_btm_next_1?pageNumber=1'
+        headers = {'User-Agent': get_random_user_agent()}
+        urllib3.disable_warnings()
+        response = get(amazon_url, headers=headers, verify=False, timeout=30)
+        cleaned_response = response.text.replace('\x00', '')
+        parser_to_html = html.fromstring(cleaned_response)
+
+        data = {'number_reviews': ''.join(parser_to_html.xpath('.//span[@data-hook="total-review-count"]//text()')).replace(',', ''),
+                'product_price': ''.join(parser_to_html.xpath('.//span[contains(@class,"a-color-price arp-price")]//text()')).strip(),
+                'product_name': ''.join(parser_to_html.xpath('.//a[@data-hook="product-link"]//text()')).strip(),
+                'total_ratings': parser_to_html.xpath('//table[@id="histogramTable"]//tr')}
+
+        for ratings in data['total_ratings']:
+            extracted_rating = ratings.xpath('./td//a//text()')
+            if extracted_rating:
+                rating_key = extracted_rating[0]
+                rating_value = extracted_rating[1]
+                if rating_key:
+                    ratings_dict.update({rating_key: rating_value})
+
+        number_page_reviews = int(int(data['number_reviews']) / 10)
+
+        if number_page_reviews % 2 == 0:
+            number_page_reviews += 1
+        else:
+            number_page_reviews += 2
+
+        return data['product_price'], data['product_name'],\
+               data['number_reviews'], ratings_dict, number_page_reviews, headers
+    except Exception as e:
+        return {"url": amazon_url, "error": e}
 
 
 
@@ -86,64 +126,30 @@ def download_site(url):
 
 
 
-
-def get_header(asin):
-    try:
-        global headers
-        ratings_dict = {}
-        amazon_url = 'https://www.amazon.com/product-reviews/' + asin + '/ref=cm_cr_arp_d_paging_btm_next_1?pageNumber=1'
-        urllib3.disable_warnings()
-        headers = {'User-Agent': get_random_user_agent()}
-        response = get(amazon_url, headers=headers, verify=False, timeout=30)
-        cleaned_response = response.text.replace('\x00', '')
-        parser_to_html = html.fromstring(cleaned_response)
-
-        data = {'number_reviews': ''.join(parser_to_html.xpath('.//span[@data-hook="total-review-count"]//text()')).replace(',', ''),
-                'product_price': ''.join(parser_to_html.xpath('.//span[contains(@class,"a-color-price arp-price")]//text()')).strip(),
-                'product_name': ''.join(parser_to_html.xpath('.//a[@data-hook="product-link"]//text()')).strip(),
-                'total_ratings': parser_to_html.xpath('//table[@id="histogramTable"]//tr')}
-
-        for ratings in data['total_ratings']:
-            extracted_rating = ratings.xpath('./td//a//text()')
-            if extracted_rating:
-                rating_key = extracted_rating[0]
-                rating_value = extracted_rating[1]
-                if rating_key:
-                    ratings_dict.update({rating_key: rating_value})
-
-        number_page_reviews = int(int(data['number_reviews']) / 10)
-
-        if number_page_reviews % 2 == 0:
-            number_page_reviews += 1
-        else:
-            number_page_reviews += 2
-
-        return data['product_price'], data['product_name'],\
-               data['number_reviews'], ratings_dict, number_page_reviews, headers
-    except Exception as e:
-        return {"url": amazon_url, "error": e}
-
-
 def get_all_reviews(asin):
     global review_total_pages
     url_list = []
     product_price, product_name, number_reviews, ratings_dict, stop_loop_for, headers = get_header(asin)
     for page_number in range(1, stop_loop_for):
-        amazon_url = 'https://www.amazon.com/product-reviews/' + asin + '/ref=cm_cr_arp_d_paging_btm_next_' \
-                     + str(page_number) + '?pageNumber=' + str(page_number)
+        amazon_url = 'https://www.amazon.com/product-reviews/' + \
+                     asin + \
+                     '/ref=cm_cr_arp_d_paging_btm_next_' + \
+                     str(page_number) + \
+                     '?pageNumber=' + \
+                     str(page_number)
         url_list.append(amazon_url)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         executor.map(download_site, url_list)
 
-    result = {
+    response = {
         'product_name': product_name,
         'product_price': product_price,
         'number_reviews': number_reviews,
         'ratings': ratings_dict,
         'reviews': review_total_pages,
     }
-    return result
+    return response
 
 
 def create_json(name, data):
@@ -156,19 +162,18 @@ def create_json(name, data):
 def get_reviews(request):
     try:
         response = []
-        asin_list = (request.data.get('asin').replace(' ', '')).split(',')
-        format = (request.data.get('format').strip()).lower()
-        file_name = (request.data.get('format').strip()).lower()
-        for asin in asin_list:
-            print(f"In Proces for {asin}")
+        data = {'asin_list': (request.data.get('asin').replace(' ', '')).split(','),
+                'format': (request.data.get('format').strip()).lower(),
+                'file_name': (request.data.get('format').strip()).lower()}
+        for asin in data['asin_list']:
+            print(f"In Process for {asin}")
             temp = get_all_reviews(asin)
             response.append(temp)
 
-        if format != 'json':
+        if data['format'] != 'json':
             return Response(response, status.HTTP_200_OK)
         else:
-            create_json(file_name, response)
+            create_json(data['file_name'], response)
             return Response({"Success": "Download the JSON in root Directory"}, status.HTTP_200_OK)
-
     except Exception as e:
         return Response({'Error': e}, status.HTTP_400_BAD_REQUEST)
