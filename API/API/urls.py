@@ -8,6 +8,8 @@ urlpatterns = [
     url(r'^api/v1/tripadvisor/', include('tripadvisor.urls')),
     url(r'^api/v1/facebook/', include('facebook.urls')),
     url(r'^api/v1/instagram/', include('instagram.urls')),
+    url(r'^api/v1/youtube/', include('youtube.urls')),
+    url(r'^api/v1/lotame/', include('lotame.urls')),
     
     # Token
     url(r'^admin/', admin.site.urls),

@@ -3,10 +3,6 @@ from rest_framework.response import Response
 import requests as requests_python
 from rest_framework import status
 
-
-
-    
-
 @api_view(['POST'])
 def get_posts_id(request):
     try:
