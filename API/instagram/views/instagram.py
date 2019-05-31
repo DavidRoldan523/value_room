@@ -22,6 +22,7 @@ def download_site(url):
         temp = response.json()
         response_crude += temp['data']
 
+
 @api_view(['POST'])
 def get_accounts_id(request):
     try:
@@ -34,6 +35,7 @@ def get_accounts_id(request):
         return Response(response.json(), status.HTTP_200_OK)
     except Exception:
         return Response({'Error':'URL incorrecto'}, status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def get_comments(request):
