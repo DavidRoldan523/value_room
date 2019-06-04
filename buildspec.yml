@@ -1,0 +1,10 @@
+# buildspec.yml
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - pip install --upgrade awscli
+  post_build:
+    commands:
+      - echo Build completed on `date`
