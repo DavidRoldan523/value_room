@@ -50,7 +50,14 @@ def get_posts_id(request):
 
         response_clean = []
         response_clean.append([dict_temp for dict_temp in response_crude if dict_temp['message'] != ""])
+        response_final = []
+        for comment in response_clean[0]:
+            temp_id = comment['id'].split('_')
+            dict_temp = {'message': comment['message'],
+                         'id_post': temp_id[0],
+                         'id_comment': temp_id[1]}
+            response_final.append(dict_temp)
 
-        return Response(response_crude, status.HTTP_200_OK)
+        return Response(response_final, status.HTTP_200_OK)
     except Exception:
         return Response({'Error': 'URL incorrecto'}, status.HTTP_400_BAD_REQUEST)
