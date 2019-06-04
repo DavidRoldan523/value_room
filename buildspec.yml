@@ -1,10 +1,13 @@
 # buildspec.yml
 version: 0.2
-
+            
 phases:
+  install:
+    runtime-versions:
+      python: 3.7
   build:
     commands:
       - pip install --upgrade awscli
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo Build started on `date`
