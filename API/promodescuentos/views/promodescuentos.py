@@ -2,6 +2,7 @@ import concurrent.futures
 import threading
 import random
 import urllib3
+import csv
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,6 +14,32 @@ from rest_framework import status
 response_crude = []
 thread_local = threading.local()
 headers = {}
+
+
+def parse_month_to_number(month):
+    return {
+        'jan': '01',
+        'feb': '02',
+        'mar': '03',
+        'apr': '04',
+        'may': '05',
+        'jun': '06',
+        'jul': '07',
+        'aug': '08',
+        'sep': '09',
+        'oct': '10',
+        'nov': '11',
+        'dec': '12'
+    }.get(month)()
+
+
+def parse_json_to_csv(name, json):
+    with open(f"{name}.csv", mode='w', newline='', encoding="utf-8") as file:
+        employee_writer = csv.writer(file, delimiter='|')
+        employee_writer.writerow(json[0].keys())
+        for data in json:
+            employee_writer.writerow(data.values())
+
 
 def get_random_user_agent():
     user_agent_list = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
@@ -42,10 +69,14 @@ def download_site(url):
     cleaned_response = response.text.replace('\x00', '')
     parser_to_html = html.fromstring(cleaned_response)
     reviews = parser_to_html.xpath('.//div[@class="comments-list comments-list--paginated"]')
-    for review in reviews:
+    for review in reviews[0]:
         review_text = review.xpath('.//div[@class="comment-body"]//text()')
-        #response_crude += review_text
-        review_dict = {'review_text': review_text}
+        review_author = review.xpath('.//div[@class="lbox--v-3 flex--toW3 height--toW3-auto"]//text()')
+        review_date = review.xpath('.//time[@class="text--color-greyShade overflow--wrap-off"]//text()')
+        review_date_clean = (review_date[0][:len(review_date[0]) - 1]).split(' ')
+        review_dict = {'review_text': (review_text[0]).replace('"', ''),
+                       'review_author': review_author[0],
+                       'review_date': f'{review_date_clean[1]}-{review_date_clean[0]}-2019'}
         response_crude.append(review_dict)
 
 
@@ -75,6 +106,8 @@ def get_reviews(request):
         with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
             executor.map(download_site, url_comments_list)
 
-        return Response(response_crude, status.HTTP_200_OK)
+        parse_json_to_csv('test', response_crude)
+        return Response({'Response': 'Download the file in root directory'}, status.HTTP_200_OK)
+        # return Response(response_crude, status.HTTP_200_OK)
     except Exception as e:
         return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
