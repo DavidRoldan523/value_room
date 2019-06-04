@@ -17,20 +17,20 @@ headers = {}
 
 
 def parse_month_to_number(month):
-    return {
-        'jan': '01',
-        'feb': '02',
-        'mar': '03',
-        'apr': '04',
-        'may': '05',
-        'jun': '06',
-        'jul': '07',
-        'aug': '08',
-        'sep': '09',
-        'oct': '10',
-        'nov': '11',
-        'dec': '12'
-    }.get(month)()
+    return { 
+        'jan':  '01', 
+        'feb':  '02', 
+        'mar':  '03',
+        'apr':  '04',
+        'may':  '05',
+        'jun':  '06',
+        'jul':  '07',
+        'aug':  '08',
+        'sep':  '09',
+        'oct':  '10',
+        'nov':  '11',
+        'dec':  '12',
+    }.get(month, "Invalid date")
 
 
 def parse_json_to_csv(name, json):
@@ -76,7 +76,7 @@ def download_site(url):
         review_date_clean = (review_date[0][:len(review_date[0]) - 1]).split(' ')
         review_dict = {'review_text': (review_text[0]).replace('"', ''),
                        'review_author': review_author[0],
-                       'review_date': f'{review_date_clean[1]}-{review_date_clean[0]}-2019'}
+                       'review_date': f'{review_date_clean[1]}-{parse_month_to_number(review_date_clean[0])}-2019'}
         response_crude.append(review_dict)
 
 
