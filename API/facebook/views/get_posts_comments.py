@@ -24,17 +24,16 @@ def download_site(url):
 
 
 @api_view(['POST'])
-def get_posts_id(request):
+def get_posts_comments(request):
     try:
         global response_crude
         token = request.data.get('token')
         page_id = request.data.get('page_id')
-        fields = request.data.get('fields') #id,created_time
         since = request.data.get('since')
         until = request.data.get('until')
         url_posts = f"https://graph.facebook.com/v3.3/{page_id}/posts" \
                     f"?access_token={token}" \
-                    f"&fields={fields}" \
+                    f"&fields=id" \
                     f"&since={since}&until={until}&limit=100"
         response_posts = requests_python.get(url_posts)
         response_posts_json = response_posts.json()
@@ -42,7 +41,7 @@ def get_posts_id(request):
         for post in response_posts_json['data']:
             url_temp = f"https://graph.facebook.com/v3.3/{post['id']}/comments" \
                     f"?access_token={token}" \
-                    f"&fields=message&limit=500"
+                    f"&fields=message,created_time&limit=500"
             url_comments_list.append(url_temp)
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
@@ -53,9 +52,10 @@ def get_posts_id(request):
         response_final = []
         for comment in response_clean[0]:
             temp_id = comment['id'].split('_')
-            dict_temp = {'message': comment['message'],
+            dict_temp = {'comment': comment['message'],
                          'id_post': temp_id[0],
-                         'id_comment': temp_id[1]}
+                         'id_comment': temp_id[1],
+                         'created_time': comment['created_time']}
             response_final.append(dict_temp)
 
         return Response(response_final, status.HTTP_200_OK)
