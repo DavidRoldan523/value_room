@@ -52,9 +52,9 @@ def get_posts_comments(request):
         response_final = []
         for comment in response_clean[0]:
             temp_id = comment['id'].split('_')
-            dict_temp = {'comment': comment['message'],
-                         'id_post': temp_id[0],
+            dict_temp = {'id_post': temp_id[0],
                          'id_comment': temp_id[1],
+                         'comment': comment['message'],                
                          'created_time': comment['created_time']}
             response_final.append(dict_temp)
 
