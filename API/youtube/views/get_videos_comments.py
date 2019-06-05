@@ -21,11 +21,15 @@ def download_site(url):
     with session.get(url) as response:
         response_temp = response.json()
         for comment in response_temp['items']:
-            response_final.append(comment['snippet']['topLevelComment']['snippet']['textOriginal'])
+            temp_comment = {'video_id': comment['snippet']['videoId'],
+                            'comment_id': comment['snippet']['topLevelComment']['id'],
+                            'comment': comment['snippet']['topLevelComment']['snippet']['textOriginal'],
+                            'created_time': comment['snippet']['topLevelComment']['snippet']['publishedAt']}
+            response_final.append(temp_comment)
 
 
 @api_view(['POST'])
-def get_reviews_videos(request):
+def get_videos_comments(request):
     try:
         global response_final
         channel_id = request.data.get('channel_id')
@@ -43,6 +47,7 @@ def get_reviews_videos(request):
         for video in response_videos_json['items']:
             url_video = f"https://www.googleapis.com/youtube/v3/commentThreads" \
                         f"?part=snippet" \
+                        f"&fields=items(snippet(videoId,topLevelComment(id,snippet(textOriginal,publishedAt))))" \
                         f"&videoId={video['id']['videoId']}" \
                         f"&key={key}" \
                         f"&maxResults=100" \
