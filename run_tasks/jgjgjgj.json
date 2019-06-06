@@ -22,19 +22,16 @@
         "created_time": "2019-03-27T05:29:11.000Z",
         "comments": [
             {
-                "video_id": "0L8ciHe-0Ts",
                 "comment_id": "UgzZNWfcLkfW9QptKE94AaABAg",
                 "comment_text": "No existe la pestaña premium",
                 "created_time": "2019-05-14T17:00:31.000Z"
             },
             {
-                "video_id": "0L8ciHe-0Ts",
                 "comment_id": "Ugw1h_BYkChimwyC7iN4AaABAg",
                 "comment_text": "KNM",
                 "created_time": "2019-04-27T16:15:21.000Z"
             },
             {
-                "video_id": "0L8ciHe-0Ts",
                 "comment_id": "UgxcXVekNIORUXq7vWR4AaABAg",
                 "comment_text": "Yo ya tengo mis 3 meses gratis y no los puedo usar :(",
                 "created_time": "2019-04-09T00:09:22.000Z"
@@ -47,25 +44,21 @@
         "created_time": "2019-02-22T17:18:26.000Z",
         "comments": [
             {
-                "video_id": "79TzgTnRcs8",
                 "comment_id": "Ugw-SlK4yMuFtPMagY94AaABAg",
                 "comment_text": "Hola una pregunta como puedo agregar un conctato a mi favorito tigo",
                 "created_time": "2019-03-03T18:53:07.000Z"
             },
             {
-                "video_id": "79TzgTnRcs8",
                 "comment_id": "UgxRrzsgRT2pmfPaQrB4AaABAg",
                 "comment_text": "Pongan las características",
                 "created_time": "2019-02-24T15:56:25.000Z"
             },
             {
-                "video_id": "79TzgTnRcs8",
                 "comment_id": "UgyH6lW_KvfvC4AiMI94AaABAg",
                 "comment_text": "Hasta cuándo la promoción? xd",
                 "created_time": "2019-02-23T03:26:07.000Z"
             },
             {
-                "video_id": "79TzgTnRcs8",
                 "comment_id": "UgyYA3G9LqOONqqp73p4AaABAg",
                 "comment_text": "Regalenmelo",
                 "created_time": "2019-02-22T17:19:16.000Z"
@@ -78,7 +71,6 @@
         "created_time": "2019-02-11T23:14:58.000Z",
         "comments": [
             {
-                "video_id": "3zE3Wa1HKxA",
                 "comment_id": "Ugw9tHRdXKb2VLM54Wt4AaABAg",
                 "comment_text": "Pongan denuevo los paquetes de aplicaciones en la Tigo Shop",
                 "created_time": "2019-02-13T18:04:30.000Z"
@@ -86,28 +78,15 @@
         ]
     },
     {
-        "video_id": "piaTsYYAEIA",
-        "video_title": "TIGO Child Online Protection.",
-        "created_time": "2019-02-06T02:04:56.000Z",
-        "comments": []
-    },
-    {
         "video_id": "hzsq5tLGEH8",
         "video_title": "¡Por que la felicidad se mide con megas y con más canales en HD!",
         "created_time": "2019-01-28T23:40:11.000Z",
         "comments": [
             {
-                "video_id": "hzsq5tLGEH8",
                 "comment_id": "UgwsdwoguYzkIf_HDxh4AaABAg",
                 "comment_text": "Una pregunta\nSi ya tengo el contrato con ustedes\nQ es cable digital + internet\nPuedo pasarme a esa promoción ???",
                 "created_time": "2019-01-29T10:39:44.000Z"
             }
         ]
-    },
-    {
-        "video_id": "cvWrWCEBfOA",
-        "video_title": "Tigo Business, una solución para tu negocio.",
-        "created_time": "2019-01-10T17:26:43.000Z",
-        "comments": []
     }
 ]
