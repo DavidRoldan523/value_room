@@ -54,5 +54,5 @@ def get_comments(request):
             response_final.append(dict_temp)
 
         return Response(response_final, status.HTTP_200_OK)
-    except Exception:
-        return Response({'Error':'URL incorrecto'}, status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)

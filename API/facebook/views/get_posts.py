@@ -20,7 +20,6 @@ def get_posts(request):
         response_final = []
         for comment in response_crude['data']:
             temp_id = comment['id'].split('_')
-            print(temp_id)
             dict_temp = {'id_page': temp_id[0],
                          'id_post': temp_id[1],
                          'name_post': comment['message'],
@@ -28,5 +27,5 @@ def get_posts(request):
             response_final.append(dict_temp)
 
         return Response(response_final, status.HTTP_200_OK)
-    except Exception:
-        return Response({'Error': 'URL incorrecto'}, status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)

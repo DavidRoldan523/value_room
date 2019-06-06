@@ -59,6 +59,6 @@ def get_videos_comments(request):
             executor.map(download_site, url_comments_list)
 
         return Response(response_final, status.HTTP_200_OK)
-    except Exception:
-        return Response({'Error': 'URL incorrecto'}, status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
 
