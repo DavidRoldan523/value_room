@@ -24,9 +24,10 @@ def download_site(url):
         for video in response_final_videos:
             for comment in response_temp['items']:
                 if video['video_id'] == comment['snippet']['videoId']:
+                    date_temp = comment['snippet']['topLevelComment']['snippet']['publishedAt'].split('T')
                     temp_comment = {'comment_id': comment['snippet']['topLevelComment']['id'],
                                     'comment_text': comment['snippet']['topLevelComment']['snippet']['textOriginal'],
-                                    'created_time': comment['snippet']['topLevelComment']['snippet']['publishedAt']}
+                                    'created_time': date_temp[0]}
                     video['comments'].append(temp_comment)
 
 
@@ -50,10 +51,11 @@ def get_videos(request):
         response_videos = requests_python.get(url_video)
         response_videos_json = response_videos.json()
         for video in response_videos_json['items']:
+            date_temp = video['snippet']['publishedAt'].split('T')
             temp_video = {'channel_name': video['snippet']['channelTitle'],
                           'video_id': video['id']['videoId'],
                           'video_title': video['snippet']['title'],
-                          'created_time': video['snippet']['publishedAt'],
+                          'created_time': date_temp[0],
                           'comments': []}
             response_final_videos.append(temp_video)
 
