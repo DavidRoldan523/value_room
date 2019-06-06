@@ -24,9 +24,10 @@ def download_site(url):
         for video in response_final_videos:
             for comment in response_temp['items']:
                 if video['video_id'] == comment['snippet']['videoId']:
+                    date_temp = comment['snippet']['topLevelComment']['snippet']['publishedAt'].split('T')
                     temp_comment = {'comment_id': comment['snippet']['topLevelComment']['id'],
                                     'comment_text': comment['snippet']['topLevelComment']['snippet']['textOriginal'],
-                                    'created_time': comment['snippet']['topLevelComment']['snippet']['publishedAt']}
+                                    'created_time': date_temp[0]}
                     video['comments'].append(temp_comment)
 
 
@@ -43,16 +44,18 @@ def get_videos(request):
         url_video = f"https://www.googleapis.com/youtube/v3/search" \
                     f"?key={key}&channelId={channel_id}" \
                     f"&part=id,snippet" \
-                    f"&fields=items(snippet(publishedAt,title),id(videoId))" \
+                    f"&fields=items(snippet(publishedAt,title,channelTitle),id(videoId))" \
                     f"&order=date" \
                     f"&maxResults=50" \
                     f"&publishedAfter={date}"  # (RFC 3339) DATE FORMAT
         response_videos = requests_python.get(url_video)
         response_videos_json = response_videos.json()
         for video in response_videos_json['items']:
-            temp_video = {'video_id': video['id']['videoId'],
+            date_temp = video['snippet']['publishedAt'].split('T')
+            temp_video = {'channel_name': video['snippet']['channelTitle'],
+                          'video_id': video['id']['videoId'],
                           'video_title': video['snippet']['title'],
-                          'created_time': video['snippet']['publishedAt'],
+                          'created_time': date_temp[0],
                           'comments': []}
             response_final_videos.append(temp_video)
 
