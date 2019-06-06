@@ -1,24 +1,26 @@
 from botocore.vendored import requests
 import boto3
 
-class YouTube:
+class Facebook:
 
-    def __init__(self, url, key, channel_id, date, token, database, database_table):
+    def __init__(self, url, page_id, token, fb_token, since, until, database, database_table):
         self.url = url
-        self.key = key
-        self.channel_id = channel_id
-        self.date = date
+        self.page_id = page_id
         self.token = token
+        self.fb_token = fb_token
+        self.since = since
+        self.until = until
         self.database = database
         self.database_table = database_table
 
     def load_data(self):
         response = requests.post(f'{self.url}',
-                                 data={'key': f'{self.key}',
-                                       'channel_id': f'{self.channel_id}',
-                                       'date': f'{self.date}'},
+                                 data={'page_id': f'{self.page_id}',
+                                       'fb_token': f'{self.fb_token}',
+                                       'since': f'{self.since}',
+                                       'until': f'{self.until}'},
                                  headers={'Authorization': f'Token {self.token}'})
         database = boto3.resource(self.database)
         table = database.Table(self.database_table)
-        for video in response.json():
-            table.put_item(Item=video)
+        for post in response.json():
+            table.put_item(Item=post)
