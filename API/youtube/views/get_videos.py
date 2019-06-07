@@ -18,6 +18,7 @@ def get_session():
 
 def download_site(url):
     global response_comments_final, response_final_videos
+    response_comments_final = []
     session = get_session()
     with session.get(url) as response:
         response_temp = response.json()
@@ -36,7 +37,7 @@ def get_videos(request):
     try:
         global response_comments_final, response_final_videos
         url_comments_list = []
-
+        response_final_videos = []
         channel_id = request.data.get('channel_id')
         key = request.data.get('key')
         date = request.data.get('date')
