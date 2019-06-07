@@ -24,5 +24,11 @@ class YouTube:
     def load_data(self):
         database = boto3.resource(self.database)
         table = database.Table(self.database_table)
+        # Clear previous Data
+        scan = table.scan()
+        with table.batch_writer() as batch:
+            for item in scan['Items']:
+                if item['video_id'] != '1':
+                    batch.delete_item(Key={'video_id': item['video_id']})
         for video in self.get_data():
             table.put_item(Item=video)
