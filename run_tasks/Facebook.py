@@ -16,7 +16,7 @@ class Facebook:
     def get_data(self):
         response = requests.post(f'{self.url}',
                                  data={'page_id': f'{self.page_id}',
-                                       'fb_token': f'{self.fb_token}',
+                                       'token': f'{self.fb_token}',
                                        'since': f'{self.since}',
                                        'until': f'{self.until}'},
                                  headers={'Authorization': f'Token {self.token}'})

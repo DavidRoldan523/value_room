@@ -14,7 +14,7 @@ class Instagram:
     def get_data(self):
         response = requests.post(f'{self.url}',
                                  data={'page_id': f'{self.page_id}',
-                                       'fb_token': f'{self.fb_token}'},
+                                       'token': f'{self.fb_token}'},
                                  headers={'Authorization': f'Token {self.token}'})
         return response.json()
 
