@@ -1,15 +1,18 @@
 from botocore.vendored import requests
 import boto3
+import json
+
 
 class Instagram:
 
-    def __init__(self, url, page_id, token, fb_token, database, database_table):
+    def __init__(self, url, page_id, token, fb_token, storage, bucket):
         self.url = url
         self.page_id = page_id
         self.token = token
         self.fb_token = fb_token
-        self.database = database
-        self.database_table = database_table
+        self.storage = storage
+        self.bucket = bucket
+        self.file_name = ''
 
     def get_data(self):
         response = requests.post(f'{self.url}',
@@ -19,13 +22,14 @@ class Instagram:
         return response.json()
 
     def load_data(self):
-        database = boto3.resource(self.database)
-        table = database.Table(self.database_table)
-        #Clear previous Data
-        scan = table.scan()
-        with table.batch_writer() as batch:
-            for item in scan['Items']:
-                if item['post_id'] != '1':
-                    batch.delete_item(Key={'post_id': item['post_id']})
-        for post in self.get_data():
-            table.put_item(Item=post)
+        response = self.get_data()
+        self.file_name = response[0]['account_name']
+
+        with open(f"/tmp/{self.file_name}.json", "w") as file:
+            json.dump(response, file)
+
+        connection = boto3.client(self.storage)
+        connection.upload_file(f"/tmp/{self.file_name}.json", self.bucket, f"{self.file_name}.json")
+
+
+
