@@ -4,10 +4,19 @@ import requests as requests_python
 from rest_framework import status
 import concurrent.futures
 import threading
+import random
 
 response_comments_final = []
 response_final_videos = []
 thread_local = threading.local()
+
+
+def get_youtube_key():
+    keys_list = ['AIzaSyCUuCL3fQYLe_4jb4axOA9fqg8Y7mpIHmM',
+                 'AIzaSyCQQnZXr5ufAGSsSsob78Q2vyxrG1ANvps',
+                 'AIzaSyCeQ3PkNB1HyJlb_AdYFOl4tUTy4_k2O5c',
+                 'AIzaSyBlGtCmbR5inPwc9wJc2SQKxB9fpHoPFjg']
+    return random.choice(keys_list)
 
 
 def get_session():
@@ -39,11 +48,10 @@ def get_videos(request):
         url_comments_list = []
         response_final_videos = []
         channel_id = request.data.get('channel_id')
-        key = request.data.get('key')
         date = request.data.get('date')
-
+        youtube_key = get_youtube_key()
         url_video = f"https://www.googleapis.com/youtube/v3/search" \
-                    f"?key={key}&channelId={channel_id}" \
+                    f"?key={youtube_key}&channelId={channel_id}" \
                     f"&part=id,snippet" \
                     f"&fields=items(snippet(publishedAt,title,channelTitle),id(videoId))" \
                     f"&order=date" \
@@ -65,7 +73,7 @@ def get_videos(request):
                         f"?part=snippet" \
                         f"&fields=items(snippet(videoId,topLevelComment(id,snippet(textOriginal,publishedAt))))" \
                         f"&videoId={video['id']['videoId']}" \
-                        f"&key={key}" \
+                        f"&key={youtube_key}" \
                         f"&maxResults=100" \
                         f"&moderationStatus=published" \
                         f"&textFormat=plainText"

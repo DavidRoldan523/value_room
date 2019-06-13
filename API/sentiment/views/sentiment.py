@@ -11,3 +11,5 @@ def sentiment(request):
         return Response({'Response': 'sentiment'}, status.HTTP_200_OK)
     except Exception as e:
         return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
+
+

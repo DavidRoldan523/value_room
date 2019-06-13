@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'twitter',
     'youtube',
     'instagram',
+    'sentiment',
+    'promodescuentos',
 ]
 
 REST_FRAMEWORK = {
