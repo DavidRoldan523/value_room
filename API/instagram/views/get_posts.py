@@ -37,6 +37,7 @@ def download_site(url):
 def get_comments(request):
     try:
         global response_crude
+        response_crude = []
         page_id = request.data.get('page_id')
         fb_token = get_fb_token('EAAD3osazFggBAO3y3V6olXlnM1yLeGQa6hWE2TEmH9XIM92pg4g6Ee6CZBf094sw1HHZCAK73cZC03pzxIrZACFr1FtzBbA0dSmRGMACzbEY23otq7upXWXPYubU3wLGLho3jGIKIcOe356dZCaWtkf2SZCicRx8YQiQILlh2COQZDZD')
         url_posts = f"https://graph.facebook.com/v3.3/{page_id}/media" \

@@ -37,6 +37,7 @@ def download_site(url):
 def get_comments(request):
     try:
         global response_crude
+        response_crude = []
         page_id = request.data.get('page_id')
         since = request.data.get('since')
         until = request.data.get('until')

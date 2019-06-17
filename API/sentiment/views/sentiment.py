@@ -77,8 +77,9 @@ def sentiment(request):
         token_api = str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
         data = get_requests(request.data.items())
         response = get_reviews(data, token_api)
+        print(len(response_final['comments']))
         get_polarity(response)
-        return Response(response_final, status.HTTP_200_OK)
+        return Response({'h': 'h'}, status.HTTP_200_OK)
     except Exception as e:
         return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
 
