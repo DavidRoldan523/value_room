@@ -2,11 +2,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import requests as requests_python
 from rest_framework import status
-import concurrent.futures
-import threading
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 response_crude = []
-thread_local = threading.local()
 
 
 def get_fb_token(previus_token):
@@ -19,15 +18,8 @@ def get_fb_token(previus_token):
     return token['access_token']
 
 
-def get_session():
-    if not hasattr(thread_local, "session"):
-        thread_local.session = requests_python.Session()
-    return thread_local.session
-
-
-def download_site(url):
+def download_site(session, url):
     global response_crude
-    session = get_session()
     with session.get(url) as response:
         temp = response.json()
         response_crude += temp['data']
@@ -66,8 +58,12 @@ def get_comments(request):
                     f"&fields=message,created_time&limit=500"
             url_comments_list.append(url_temp)
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
-            executor.map(download_site, url_comments_list)
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            with requests_python.Session() as session:
+                loop = asyncio.get_event_loop()
+                tasks = [loop.run_in_executor(executor, download_site, *(session, url)) for url in url_comments_list]
+                for response2 in await asyncio.gather(*tasks):
+                    pass
 
         response_clean = []
         response_clean.append([dict_temp for dict_temp in response_crude if dict_temp['message'] != ""])
