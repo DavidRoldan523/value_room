@@ -5,6 +5,9 @@ from rest_framework import status
 import concurrent.futures
 import threading
 import random
+from datetime import date as python_date
+
+
 
 response_comments_final = []
 response_final_videos = []
@@ -41,6 +44,7 @@ def download_site(url):
                     video['comments'].append(temp_comment)
 
 
+
 @api_view(['POST'])
 def get_videos(request):
     try:
@@ -49,6 +53,7 @@ def get_videos(request):
         response_final_videos = []
         channel_id = request.data.get('channel_id')
         date = request.data.get('date')
+
         youtube_key = get_youtube_key()
         url_video = f"https://www.googleapis.com/youtube/v3/search" \
                     f"?key={youtube_key}&channelId={channel_id}" \
@@ -61,8 +66,8 @@ def get_videos(request):
         response_videos_json = response_videos.json()
         for video in response_videos_json['items']:
             date_temp = video['snippet']['publishedAt'].split('T')
-            temp_video = {'channel_name': video['snippet']['channelTitle'],
-                          'video_id': video['id']['videoId'],
+            channel_name = video['snippet']['channelTitle']
+            temp_video = {'video_id': video['id']['videoId'],
                           'video_title': video['snippet']['title'],
                           'created_time': date_temp[0],
                           'comments': []}
@@ -82,7 +87,15 @@ def get_videos(request):
         with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
             executor.map(download_site, url_comments_list)
 
-        response_definitive = [video for video in response_final_videos if len(video['comments']) != 0]
+        response_definitive = [{'channel_name': '',
+                                'since': '',
+                                'until': '',
+                                'results': []}]
+
+        response_definitive[0]["channel_name"] = channel_name
+        response_definitive[0]["since"] = date_temp[0]
+        response_definitive[0]["until"] = python_date.today().strftime("%Y-%m-%d")
+        response_definitive[0]['results'] = [video for video in response_final_videos if len(video['comments']) != 0]
 
         return Response(response_definitive, status.HTTP_200_OK)
     except Exception as e:

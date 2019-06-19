@@ -3,25 +3,47 @@ from rest_framework.response import Response
 import requests as requests_python
 from rest_framework import status
 from classifier import *
+import re
+from stop_words import get_stop_words
 
 response_final = \
         {
             'medium': '',
-            'comments': [],
-            'frequency_words':
-                [
-                    {
-                        'date': '',
-                        'words':
-                            [
-                                {
-                                    'word': '',
-                                    'frequency': 0
-                                }
-                            ]
-                    }
-                ]
+            'account_name': '',
+            'date_since': '',
+            'date_until': '',
+            'results':
+            [
+                {
+                    'date': '',
+                    'comments':
+                        [
+                            {
+                                'post_id': '',
+                                'post_name': '',
+                                'comment_text': '',
+                                'polarity': ''
+                            }
+                        ],
+                    'frequency_words':
+                        [
+                            {
+                                'word': '',
+                                'frequency': 0
+                            }
+                        ]
+                }
+            ]
         }
+
+
+def clean_string(string):
+    stop_words = get_stop_words('spanish')
+    string = re.sub(r"[^a-zA-Z]", ' ', string)  # Remove Special Characters
+    for word in stop_words:
+        if re.findall(fr'\b({word})\b', string):
+            string = re.sub(fr"\b({word})\b", '', string)
+    return string
 
 
 def get_requests(request):
@@ -65,9 +87,15 @@ def get_polarity(data):
             response_final['comments'].append(temp_dict)
 
 
-def get_frequency_words(data):
-    pass
+def get_frequency_words(string):
+    words_list = string.split()
+    words_frequency = [words_list.count(word) for word in words_list]
+    response = sorted(set(zip(words_list, words_frequency)), key=lambda x: x[1], reverse=True)
+    return response
 
+
+def dates_tratament():
+    pass
 
 @api_view(['POST'])
 def sentiment(request):
@@ -77,7 +105,6 @@ def sentiment(request):
         token_api = str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
         data = get_requests(request.data.items())
         response = get_reviews(data, token_api)
-        print(len(response_final['comments']))
         get_polarity(response)
         return Response({'h': 'h'}, status.HTTP_200_OK)
     except Exception as e:

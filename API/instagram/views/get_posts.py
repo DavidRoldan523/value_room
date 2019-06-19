@@ -4,6 +4,7 @@ import requests as requests_python
 from rest_framework import status
 import concurrent.futures
 import threading
+from datetime import date as python_date
 
 response_crude = []
 thread_local = threading.local()
@@ -49,8 +50,8 @@ def get_comments(request):
 
         for post in response_posts_json['data']:
             date_temp = post['timestamp'].split('T')
-            temp_post = {'account_name': post['username'],
-                         'post_id': post['id'],
+            account_name = post['username']
+            temp_post = {'post_id': post['id'],
                          'post_name': post['caption'],
                          'created_time': date_temp[0],
                          'comments': []}
@@ -80,8 +81,15 @@ def get_comments(request):
                                 'comment_text': comment['text'],                
                                 'created_time': date_temp[0]}                    
                     post['comments'].append(dict_temp)
-        response_definitive = [post for post in response_final_posts if len(post['comments']) != 0]
-        
+
+        response_definitive = [{'account_name': '',
+                                'since': '',
+                                'until': '',
+                                'results': []}]
+        response_definitive[0]["account_name"] = account_name
+        response_definitive[0]["since"] = date_temp[0]
+        response_definitive[0]["until"] = python_date.today().strftime("%Y-%m-%d")
+        response_definitive[0]['results'] = [post for post in response_final_posts if len(post['comments']) != 0]
         return Response(response_definitive, status.HTTP_200_OK)
     except Exception as e:
         return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
