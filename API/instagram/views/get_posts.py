@@ -50,7 +50,7 @@ def get_comments(request):
 
         for post in response_posts_json['data']:
             date_temp = post['timestamp'].split('T')
-            account_name = post['username']
+            page_name = post['username']
             temp_post = {'post_id': post['id'],
                          'post_name': post['caption'],
                          'created_time': date_temp[0],
@@ -82,11 +82,13 @@ def get_comments(request):
                                 'created_time': date_temp[0]}                    
                     post['comments'].append(dict_temp)
 
-        response_definitive = [{'account_name': '',
+        response_definitive = [{'page_name': '',
+                                'page_id': '',
                                 'since': '',
                                 'until': '',
                                 'results': []}]
-        response_definitive[0]["account_name"] = account_name
+        response_definitive[0]["page_name"] = page_name
+        response_definitive[0]["page_id"] = page_id
         response_definitive[0]["since"] = date_temp[0]
         response_definitive[0]["until"] = python_date.today().strftime("%Y-%m-%d")
         response_definitive[0]['results'] = [post for post in response_final_posts if len(post['comments']) != 0]

@@ -88,11 +88,13 @@ def get_videos(request):
             executor.map(download_site, url_comments_list)
 
         response_definitive = [{'channel_name': '',
+                                'channel_id': '',
                                 'since': '',
                                 'until': '',
                                 'results': []}]
 
         response_definitive[0]["channel_name"] = channel_name
+        response_definitive[0]["channel_id"] = channel_id
         response_definitive[0]["since"] = date_temp[0]
         response_definitive[0]["until"] = python_date.today().strftime("%Y-%m-%d")
         response_definitive[0]['results'] = [video for video in response_final_videos if len(video['comments']) != 0]
