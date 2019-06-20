@@ -36,7 +36,7 @@ def download_site(url):
         response_temp = response.json()
         for video in response_final_videos:
             for comment in response_temp['items']:
-                if video['video_id'] == comment['snippet']['videoId']:
+                if video['post_id'] == comment['snippet']['videoId']:
                     date_temp = comment['snippet']['topLevelComment']['snippet']['publishedAt'].split('T')
                     temp_comment = {'comment_id': comment['snippet']['topLevelComment']['id'],
                                     'comment_text': comment['snippet']['topLevelComment']['snippet']['textOriginal'],
@@ -51,12 +51,12 @@ def get_videos(request):
         global response_comments_final, response_final_videos
         url_comments_list = []
         response_final_videos = []
-        channel_id = request.data.get('channel_id')
+        page_id = request.data.get('page_id')
         date = request.data.get('date')
 
         youtube_key = get_youtube_key()
         url_video = f"https://www.googleapis.com/youtube/v3/search" \
-                    f"?key={youtube_key}&channelId={channel_id}" \
+                    f"?key={youtube_key}&channelId={page_id}" \
                     f"&part=id,snippet" \
                     f"&fields=items(snippet(publishedAt,title,channelTitle),id(videoId))" \
                     f"&order=date" \
@@ -64,14 +64,16 @@ def get_videos(request):
                     f"&publishedAfter={date}"  # (RFC 3339) DATE FORMAT
         response_videos = requests_python.get(url_video)
         response_videos_json = response_videos.json()
+
         for video in response_videos_json['items']:
             date_temp = video['snippet']['publishedAt'].split('T')
-            channel_name = video['snippet']['channelTitle']
-            temp_video = {'video_id': video['id']['videoId'],
-                          'video_title': video['snippet']['title'],
+            page_name = video['snippet']['channelTitle']
+            temp_video = {'post_id': video['id']['videoId'],
+                          'post_name': video['snippet']['title'],
                           'created_time': date_temp[0],
                           'comments': []}
             response_final_videos.append(temp_video)
+
 
         for video in response_videos_json['items']:
             url_video = f"https://www.googleapis.com/youtube/v3/commentThreads" \
@@ -87,14 +89,14 @@ def get_videos(request):
         with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
             executor.map(download_site, url_comments_list)
 
-        response_definitive = [{'channel_name': '',
-                                'channel_id': '',
+        response_definitive = [{'page_name': '',
+                                'page_id': '',
                                 'since': '',
                                 'until': '',
                                 'results': []}]
 
-        response_definitive[0]["channel_name"] = channel_name
-        response_definitive[0]["channel_id"] = channel_id
+        response_definitive[0]["page_name"] = page_name
+        response_definitive[0]["page_id"] = page_id
         response_definitive[0]["since"] = date_temp[0]
         response_definitive[0]["until"] = python_date.today().strftime("%Y-%m-%d")
         response_definitive[0]['results'] = [video for video in response_final_videos if len(video['comments']) != 0]
