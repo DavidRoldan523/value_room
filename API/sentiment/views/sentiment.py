@@ -31,38 +31,6 @@ def get_reviews(data, token_api):
     return response.json()
 
 
-def json_to_csv(name, json):
-    with open(f"{name}.csv", mode='w', newline='', encoding='utf-8') as file:
-        employee_writer = csv.writer(file, delimiter=',')
-        columns = ['medium', 'page_name', 'page_id', 'date_since',
-                   'date_until', 'date', 'post_id', 'post_name',
-                   'comment_text', 'polarity', 'word', 'frequency']
-        employee_writer.writerow(columns)
-        for m in json:
-            medium = m['medium']
-            page_name = m['page_name']
-            page_id = m['page_id']
-            date_since = m['date_since']
-            date_until = m['date_until']
-            for results in json[0]['results']:
-                date = results['date']
-                for comment in results['comments']:
-                    post_id = comment['post_id']
-                    post_name = comment['post_name']
-                    for post in comment['results']:
-                        comment_text = post['comment_text']
-                        polarity = post['polarity']
-                        for frequency in results['frequency_words']:
-                            word = frequency['word']
-                            freq = frequency['frequency']
-                            string = f"{medium}|{page_name}|{page_id}|{date_since}|{date_until}|"\
-                                     f"{date}|"\
-                                     f"{post_id}|{post_name}|{comment_text}|{polarity}|"\
-                                     f"{word}|{freq}"
-                            response = string.split('|')
-                            employee_writer.writerow(response)
-
-
 def transform_date(date):
     split_original_time = date.split('-')
     response = python_date(int(split_original_time[0]),
@@ -155,8 +123,8 @@ def sentiment(request):
 
             if len(result_total_temp['comments']) > 0:
                 JSON_EXIT[0]['results'].append(result_total_temp)
-        json_to_csv('test_youtube', JSON_EXIT)
-        return Response({'h', 'h'}, status.HTTP_200_OK)
+
+        return Response(JSON_EXIT, status.HTTP_200_OK)
     except Exception as e:
         return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
 
