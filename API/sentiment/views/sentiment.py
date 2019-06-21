@@ -41,7 +41,9 @@ def transform_date(date):
 
 def clean_string(string):
     stop_words = get_stop_words('spanish')
-    string = re.sub(r"\b[a-zA-Z]{1}\b", '', string)  # Remove Special Characters
+    string = re.sub('[^\w]+', ' ', string.lower())
+    string = re.sub(r"\b[a-zA-Z]{1}\b", '', string)
+    string = re.sub("\d+", '', string)
     for word in stop_words:
         if re.findall(fr'\b({word})\b', string):
             string = re.sub(fr"\b({word})\b", '', string)
