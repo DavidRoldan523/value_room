@@ -1,7 +1,11 @@
+import concurrent.futures
 import boto3
+import threading
 from botocore.vendored import requests
 from tools.date import Date
 import csv
+
+thread_local = threading.local()
 
 
 def load_data(bucket, json):
@@ -41,11 +45,19 @@ def load_data(bucket, json):
     connection.upload_file(f"/tmp/{file_name}.csv", bucket, f"{file_name}.csv")
 
 
+def get_session():
+    if not hasattr(thread_local, "session"):
+        thread_local.session = requests.Session()
+    return thread_local.session
+
+
 def download_data(data):
+    session = get_session()
     url = 'http://ec2-52-206-110-32.compute-1.amazonaws.com/api/v1/sentiment/'
     headers = {'Authorization': "Token e91d9f6c9810bf07b419b2a141d6435d241c4e9f"}
-    response = requests.post(url, data=data, headers=headers)
-    load_data(data['bucket'], response.json())
+    with session.post(url, data=data, headers=headers) as response:
+        response = response.json()
+        load_data(data['bucket'], response)
 
 
 def lambda_handler(event, context):
@@ -66,8 +78,14 @@ def lambda_handler(event, context):
                    'source': 'youtube',
                    'bucket': 'bucketytube'}
 
-        download_data(youtube)
+        # Pila Excecution
+        list_objects_threading = []
+        # list_objects_threading.append(facebook)
+        #list_objects_threading.append(instagram)
+        list_objects_threading.append(youtube)
 
+        with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+            executor.map(download_data, list_objects_threading)
 
         return {'Response': 'Success'}
     except Exception as e:
