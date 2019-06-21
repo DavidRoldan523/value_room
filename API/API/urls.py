@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^api/v1/instagram/', include('instagram.urls')),
     url(r'^api/v1/youtube/', include('youtube.urls')),
     url(r'^api/v1/promodescuentos/', include('promodescuentos.urls')),
+    url(r'^api/v1/sentiment/', include('sentiment.urls')),
     
     # Token
     url(r'^admin/', admin.site.urls),
