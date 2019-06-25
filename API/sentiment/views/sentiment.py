@@ -44,6 +44,7 @@ def clean_string(string):
     string = re.sub('[^\w]+', ' ', string.lower())
     string = re.sub(r"\b[a-zA-Z]{1}\b", '', string)
     string = re.sub("\d+", '', string)
+    string = re.sub("\n", ' ', string)
 
     for word in stop_words:
         if re.findall(fr'\b({word})\b', string):

@@ -6,7 +6,7 @@ import concurrent.futures
 import threading
 import random
 from datetime import date as python_date
-
+import re
 
 
 response_comments_final = []
@@ -39,10 +39,16 @@ def download_site(url):
                 if video['post_id'] == comment['snippet']['videoId']:
                     date_temp = comment['snippet']['topLevelComment']['snippet']['publishedAt'].split('T')
                     temp_comment = {'comment_id': comment['snippet']['topLevelComment']['id'],
-                                    'comment_text': comment['snippet']['topLevelComment']['snippet']['textOriginal'],
+                                    'comment_text': replace_quotes(comment['snippet']['topLevelComment']['snippet']['textOriginal']),
                                     'created_time': date_temp[0]}
                     video['comments'].append(temp_comment)
 
+
+def replace_quotes(string):
+    string = re.sub(r"“", '', string)
+    string = re.sub(r"”", '', string)
+    string = re.sub('\n', ' ', string)
+    return string
 
 
 @api_view(['POST'])
@@ -69,7 +75,7 @@ def get_videos(request):
             date_temp = video['snippet']['publishedAt'].split('T')
             page_name = video['snippet']['channelTitle']
             temp_video = {'post_id': video['id']['videoId'],
-                          'post_name': video['snippet']['title'],
+                          'post_name': replace_quotes(video['snippet']['title']),
                           'created_time': date_temp[0],
                           'comments': []}
             response_final_videos.append(temp_video)
