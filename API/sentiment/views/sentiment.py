@@ -44,6 +44,7 @@ def clean_string(string):
     string = re.sub('[^\w]+', ' ', string.lower())
     string = re.sub(r"\b[a-zA-Z]{1}\b", '', string)
     string = re.sub("\d+", '', string)
+
     for word in stop_words:
         if re.findall(fr'\b({word})\b', string):
             string = re.sub(fr"\b({word})\b", '', string)
@@ -126,7 +127,8 @@ def sentiment(request):
             if len(result_total_temp['comments']) > 0:
                 JSON_EXIT[0]['results'].append(result_total_temp)
 
-        return Response(JSON_EXIT, status.HTTP_200_OK)
+        load_data(JSON_EXIT)
+        return Response({'Response': 'Success'}, status.HTTP_200_OK)
     except Exception as e:
         return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
 
