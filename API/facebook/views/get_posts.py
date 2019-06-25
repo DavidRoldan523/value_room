@@ -27,6 +27,7 @@ def download_site(url):
 def replace_quotes(string):
     string = re.sub(r"“", '', string)
     string = re.sub(r"”", '', string)
+    string = re.sub('\n', ' ', string)
     return string
 
 

@@ -6,6 +6,7 @@ import concurrent.futures
 import threading
 from datetime import date as python_date
 from .tools.token import Token
+import re
 
 response_crude = []
 thread_local = threading.local()
@@ -23,6 +24,12 @@ def download_site(url):
         temp = response.json()
         response_crude += temp['data']
 
+
+def replace_quotes(string):
+    string = re.sub(r"“", '', string)
+    string = re.sub(r"”", '', string)
+    string = re.sub('\n', ' ', string)
+    return string
 
 @api_view(['POST'])
 def get_comments(request):
@@ -42,7 +49,7 @@ def get_comments(request):
             date_temp = post['timestamp'].split('T')
             page_name = post['username']
             temp_post = {'post_id': post['id'],
-                         'post_name': post['caption'],
+                         'post_name': replace_quotes(post['caption']),
                          'created_time': date_temp[0],
                          'comments': []}
             response_final_posts.append(temp_post)
@@ -68,7 +75,7 @@ def get_comments(request):
                 if post['post_id'] == comment['media']['id']:
                     date_temp = comment['timestamp'].split('T')              
                     dict_temp = {'comment_id': comment['id'],
-                                'comment_text': comment['text'],                
+                                'comment_text': replace_quotes(comment['text']),
                                 'created_time': date_temp[0]}                    
                     post['comments'].append(dict_temp)
 
