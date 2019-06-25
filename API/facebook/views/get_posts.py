@@ -4,6 +4,7 @@ import requests as requests_python
 from rest_framework import status
 import concurrent.futures
 import threading
+import re
 
 response_crude = []
 thread_local = threading.local()
@@ -33,6 +34,12 @@ def download_site(url):
         response_crude += temp['data']
 
 
+def replace_quotes(string):
+    string = re.sub(r"“", '', string)
+    string = re.sub(r"”", '', string)
+    return string
+
+
 @api_view(['POST'])
 def get_comments(request):
     try:
@@ -59,7 +66,7 @@ def get_comments(request):
             date_temp = post['created_time'].split('T')
             page_name = post['from']['name']
             temp_post = {'post_id': temp_id[1],
-                         'post_name': post['message'],
+                         'post_name': replace_quotes(post['message']),
                          'created_time': date_temp[0],
                          'comments': []}
             response_final_posts[0]['results'].append(temp_post)
@@ -91,8 +98,8 @@ def get_comments(request):
                 date_temp = post['created_time'].split('T')
                 if post['post_id'] == temp_id[0]:
                     dict_temp = {'comment_id': temp_id[1],
-                                'comment_text': comment['message'],
-                                'created_time': date_temp[0]}
+                                 'comment_text': replace_quotes(comment['message']),
+                                 'created_time': date_temp[0]}
                     post['comments'].append(dict_temp)
 
 
