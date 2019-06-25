@@ -5,20 +5,10 @@ from rest_framework import status
 import concurrent.futures
 import threading
 import re
+from .tools.token import Token
 
 response_crude = []
 thread_local = threading.local()
-
-
-def get_fb_token(previus_token):
-    url_posts = f"https://graph.facebook.com/oauth/access_token?client_id=272278490387976" \
-                f"&client_secret=817e43a3a93beb7da194c28a7013950d" \
-                f"&grant_type=fb_exchange_token" \
-                f"&fb_exchange_token={previus_token}"
-    response = requests_python.get(url_posts)
-    token = response.json()
-    return token['access_token']
-
 
 def get_session():
     if not hasattr(thread_local, "session"):
@@ -48,7 +38,7 @@ def get_comments(request):
         page_id = request.data.get('page_id')
         since = request.data.get('since')
         until = request.data.get('until')
-        fb_token = get_fb_token('EAAD3osazFggBAO3y3V6olXlnM1yLeGQa6hWE2TEmH9XIM92pg4g6Ee6CZBf094sw1HHZCAK73cZC03pzxIrZACFr1FtzBbA0dSmRGMACzbEY23otq7upXWXPYubU3wLGLho3jGIKIcOe356dZCaWtkf2SZCicRx8YQiQILlh2COQZDZD')
+        fb_token = Token().get_fb_token()
         url_posts = f"https://graph.facebook.com/v3.3/{page_id}/posts" \
                     f"?access_token={fb_token}" \
                     f"&fields=id,created_time,from,message" \
