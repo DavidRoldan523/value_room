@@ -127,8 +127,7 @@ def sentiment(request):
             if len(result_total_temp['comments']) > 0:
                 JSON_EXIT[0]['results'].append(result_total_temp)
 
-        load_data(JSON_EXIT)
-        return Response({'Response': 'Success'}, status.HTTP_200_OK)
+        return Response(JSON_EXIT, status.HTTP_200_OK)
     except Exception as e:
         return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
 
