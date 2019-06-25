@@ -7,7 +7,7 @@ import csv
 def load_data(bucket, json):
     storage = 's3'
     file_name = json[0]["page_name"].replace(' ', '')
-    with open(f"/tmp/{file_name}.csv", mode='w', newline='', encoding='utf-8') as file:
+    with open(f"/tmp/{file_name}.csv", mode='w', newline='', encoding='utf8') as file:
         row_csv = csv.writer(file, delimiter=',')
         columns = ['medium', 'page_name', 'page_id', 'date_since',
                    'date_until', 'date', 'post_id', 'post_name',
@@ -52,8 +52,8 @@ def lambda_handler(event, context):
     try:
         dates = Date()
         facebook = {'page_id': '113387205347979',
-                    'since': dates.dates_facebook['since'],
-                    'until': dates.dates_facebook['until'],
+                    'since': '2019-05-01',
+                    'until': '2019-05-10',
                     'source': 'facebook',
                     'bucket': 'bucketfacebook'}
 
@@ -67,7 +67,8 @@ def lambda_handler(event, context):
                    'bucket': 'bucketytube'}
 
         download_data(youtube)
-
+        download_data(instagram)
+        download_data(facebook)
 
         return {'Response': 'Success'}
     except Exception as e:
