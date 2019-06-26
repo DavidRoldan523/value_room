@@ -10,8 +10,8 @@ class JsonToCsv:
 
     def load_data(self):
         file_name = self.json[0]["page_name"].replace(' ', '') + self.json[0]["medium"]
-        with open(f"/tmp/{file_name}.csv", mode='w', newline='', encoding='utf8') as file:
-            row_csv = csv.writer(file, delimiter=',')
+        with open(f"/tmp/{file_name}.csv", mode='w', newline='', encoding='latin-1', errors='ignore') as file:
+            row_csv = csv.writer(file, delimiter='|')
             columns = ['medium', 'page_name', 'page_id', 'date_since',
                        'date_until', 'date', 'post_id', 'post_name',
                        'comment_text', 'polarity', 'word', 'frequency']
