@@ -109,7 +109,7 @@ def sentiment(request):
                         polarity = clf.predict(comment_text)
                         comment_temp = {
                             'comment_text': comment_text,
-                            'polarity': polarity
+                            'polarity': f'{polarity:.6f}'
                         }
                         result_post_temp['results'].append(comment_temp)
                         total_coments_by_day += comment_text
@@ -118,7 +118,7 @@ def sentiment(request):
                     result_total_temp['comments'].append(result_post_temp)
 
             if total_coments_by_day != '':
-                for frecuency_words in get_frequency_words(clean_string(total_coments_by_day))[:5]:
+                for frecuency_words in get_frequency_words(clean_string(total_coments_by_day))[:50]:
                     frecuency_words_temp = {
                         'word': frecuency_words[0],
                         'frequency': frecuency_words[1]
