@@ -19,11 +19,11 @@ def get_requests(request):
 
 def get_reviews(data, token_api):
     if data['source'] == 'youtube':
-        url = '/http://ec2-18-207-188-143.compute-1.amazonaws.com:8000/api/v1/youtube/videos/'
+        url = 'http://ec2-34-238-162-57.compute-1.amazonaws.com:8001/api/v1/youtube/videos/'
     elif data['source'] == 'facebook':
-        url = 'http://ec2-18-207-188-143.compute-1.amazonaws.com:8000/api/v1/facebook/posts/'
+        url = 'http://ec2-34-238-162-57.compute-1.amazonaws.com:8001/api/v1/facebook/posts/'
     elif data['source'] == 'instagram':
-        url = 'http://ec2-18-207-188-143.compute-1.amazonaws.com:8000/api/v1/instagram/posts/'
+        url = 'http://ec2-34-238-162-57.compute-1.amazonaws.com:8001/api/v1/instagram/posts/'
     else:
         return Response({'Response': 'This Source is not available'}, status.HTTP_400_BAD_REQUEST)
     header = {'Authorization': f'token {token_api}'}
