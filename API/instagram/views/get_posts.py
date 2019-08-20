@@ -46,13 +46,16 @@ def get_comments(request):
         response_final_posts = []
 
         for post in response_posts_json['data']:
-            date_temp = post['timestamp'].split('T')
-            page_name = post['username']
-            temp_post = {'post_id': post['id'],
-                         'post_name': replace_quotes(post['caption']),
-                         'created_time': date_temp[0],
-                         'comments': []}
-            response_final_posts.append(temp_post)
+            try:
+                date_temp = post['timestamp'].split('T')
+                page_name = post['username']
+                temp_post = {'post_id': post['id'],
+                            'post_name': replace_quotes(post['caption']),
+                            'created_time': date_temp[0],
+                            'comments': []}
+                response_final_posts.append(temp_post)
+            except Exception as e:
+                pass
         
 
         url_comments_list = []

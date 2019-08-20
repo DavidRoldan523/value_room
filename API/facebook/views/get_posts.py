@@ -23,7 +23,6 @@ def download_site(url):
         temp = response.json()
         response_crude += temp['data']
 
-
 def replace_quotes(string):
     string = re.sub(r"“", '', string)
     string = re.sub(r"”", '', string)
@@ -53,14 +52,17 @@ def get_comments(request):
                                  'results': []}]
 
         for post in response_posts_json['data']:
-            temp_id = post['id'].split('_')
-            date_temp = post['created_time'].split('T')
-            page_name = post['from']['name']
-            temp_post = {'post_id': temp_id[1],
-                         'post_name': replace_quotes(post['message']),
-                         'created_time': date_temp[0],
-                         'comments': []}
-            response_final_posts[0]['results'].append(temp_post)
+            try:
+                temp_id = post['id'].split('_')
+                date_temp = post['created_time'].split('T')
+                page_name = post['from']['name']
+                temp_post = {'post_id': temp_id[1],
+                            'post_name': replace_quotes(post['message']),
+                            'created_time': date_temp[0],
+                            'comments': []}
+                response_final_posts[0]['results'].append(temp_post)
+            except Exception as e:
+                pass
 
 
         response_final_posts[0]['page_name'] = page_name
