@@ -47,6 +47,14 @@ INSTALLED_APPS = [
     'instagram',
     'sentiment',
     'promodescuentos',
+    'brandwatch_connect',
+    'displayvideo_connect',
+    'analytics_connect',
+    'hubspot_connect',
+    'mediamath_connect',
+    'semrush_connect',
+    'adwords_connect',
+    'campaignmanager_connect'
 ]
 
 REST_FRAMEWORK = {

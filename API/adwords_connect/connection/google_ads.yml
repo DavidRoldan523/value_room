@@ -1,0 +1,15 @@
+# AdWordsClient configurations
+adwords:
+  #############################################################################
+  # Required Fields                                                           #
+  developer_token: I8x0b-P0V90tXmrfm1JxPw                                     #
+  #############################################################################
+  # The following values configure the client for the installed application flow.
+  # client_id: 899518809609-e7i8ons91tfg87ru0vlekboeu6hstbar.apps.googleusercontent.com
+  # client_secret: zLqeC9lDaVvCqwd_VT69wi7-
+  # refresh_token: ya29.GltJByWq0QhIv97PbCFV5HRJpauP0CSg8dCDiW-RVEFjXXcndNRJ588BiYFuK_j_WHDXYvE6ZodE9-atbR146yesbDWPL5z4TVdQPSYD5HtINKnhXEipL3749c6v
+  #############################################################################
+  # The following values configure the client for the service account flow.   #
+  path_to_private_key_file: "client_secret.json"                              #
+  delegated_account: http://www.ariadnacommunicationsgroup.com/               #
+  #############################################################################
