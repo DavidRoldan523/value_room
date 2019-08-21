@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mediamath-data",
+  "private_key_id": "4097d375ba56d9df108eb1b672164a0a687d8ed6",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCR5T3Xwl2/lDhm\ne8wDVPSDdiKhsW38D6H2TfW9lp/XzQLKgs7F6Q1pOIe8uXvb1oHsqyv34M4euwyh\nZEybAxOfFm5uh1VUF4IA8SRMpmcZaEtygAecyhFS8MzoVTdVvzax8SBjBYVUIJQ/\nMAQ83pmg6SWjIffKriWopoFJJ49C9XMb0i2HhV9kWdgqItzQb4oyyLUrZiT0aQ/r\nHh/H7xU0ybAAn/soMi1CjQDTPWJ1Qm+lxFn166qQ9gWF3omlzqE21uBrbK2k2/QF\nikCe2IPxl8vU4uiBUc2cyk6XuJ6gebW9vaadLrbwmq+UG8CJ7ZVJWgZfuRP7sCjQ\nj7D0Q+snAgMBAAECggEABW+/hhcLSbZj5sBoNXDop6CIUvJea5tWaOv9OJXphHcA\nri2d4jpNwKFyFWtA5GhcqfDsup8gPWCxbFm6kJrWojqmFpeh+ZSNVtb63WjINhDw\nveZPN6SVwjuQcAofi9r95KkjdCYNEp1ZD/aapWCvctqPB3tJHGlbTwAWQzvtltNw\n50gP9Awiv40DeniqvX/P1B43nfHosjBMf5h6QDs92jp2vzySAxsfFHs7iiL8zE3Z\nYQ6DYbXOGgEasipf9dGBJrO8kr13ayYqM/AsMZi0joL4T0dXrE5RkbpsfQqPyjYR\nn67CEjgOiOni5Yld91a7UufYUcETYyK4Y57mel7WsQKBgQDCP/YDuUDHuc3h1bYt\nWMy2EF3bbK3bwB5bMWVTk2HP2jq8uBlXpTPbKadJOl6ZXaNF/Y1yYx1vXZZ6KZUQ\nq0KGGe3iBPDRviDw9opU0rUrH8OC6GSpRrT8Gk1E176LfWKopV0EFDUILfFGnPbR\nqIoJwXM7VoMgtr/Kq0Hy6gemuQKBgQDARjSCFQdZHfyRJ8+kvvE6egBrnNoi37Ja\n0WdZ7WpmtZ7FKtmN6o98r+i7TxYhKcs5MWvjvcbgzR8nULawgVplzFg4vTroW5ky\nhd6VdJ4qTNdg5zfmuL54KysBZYFvqkkYKcAcoFmdJA95N0VdgQyb0S5yuF7pSd2/\nJSgoP48w3wKBgQCFLuF4cB3QUr6sZqD/unCxK8uOVJdnofOuRtHYWaaoolG/buJB\nS42gaJDADnsp4B/ALzY6BWb7Ikm3/KatxR5ZX5HQc97BkAB59i+mNMnuhVrBeKD7\nxvT0HPx5hQqqDRAF3UtHLqulrgpNhfVcjpgGVFKzjn9dgK9DP+R5rqgMUQKBgQCv\n9A89M41D6oMlOu90biBHSTp1QFcHLvsCzTrtOqzyTSZ8fJgWnR6uFjS+pMM1mg+V\nyTpYcWU8d7oYum5U3CsjmXrqgZEU7i4l5AgrcUsEnslCrpWjmFEFm0uBvahTzduS\nNzLNf5hCi6t1XDUoOl6VgTomVb7Vcnlw4Mn8+x1ItQKBgDwQmnHZPWxpde21/O8G\nophOyj+mGaFG9F7yvfwzaNGYKzb1qF0Z6yNF0S9G+nOBET7D95C99g+u8cAUpXxp\nS4k3D9NOQTxxKAa/c5snHfHczPMaYKLfEZL4LKfnKjlgJZDobYgSHth4tDf8MOD9\nC58DGVb2bxkCLIZanAyvx93C\n-----END PRIVATE KEY-----\n",
+  "client_email": "mediamath-data@mediamath-data.iam.gserviceaccount.com",
+  "client_id": "114958789936882602227",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mediamath-data%40mediamath-data.iam.gserviceaccount.com"
+}
