@@ -65,9 +65,9 @@ def sentiment(request):
     try:
         token_api = str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
         data = get_requests(request.data.items())
-        data_crude = get_reviews(data, token_api)[0]
+        data_crude = get_reviews(data, token_api)
         if(len(data_crude) != 0):
-
+            data_crude = data_crude[0]
             since = transform_date(data_crude['since'])
             until = transform_date(data_crude['until'])
 
@@ -133,8 +133,7 @@ def sentiment(request):
             return Response(JSON_EXIT, status.HTTP_200_OK)
         else:
             return Response({}, status.HTTP_400_BAD_REQUEST)
-    except Exception as e:
-        print(e)
-        return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
+    except Exception:
+        return Response({}, status.HTTP_400_BAD_REQUEST)
 
 
