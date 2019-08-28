@@ -66,69 +66,73 @@ def sentiment(request):
         token_api = str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
         data = get_requests(request.data.items())
         data_crude = get_reviews(data, token_api)[0]
-        since = transform_date(data_crude['since'])
-        until = transform_date(data_crude['until'])
+        if(len(data_crude) != 0):
 
-        clf = SentimentClassifier()
-        JSON_EXIT = [
-            {
-                'medium': '',
-                'page_name': '',
-                'page_id': '',
-                'date_since': '',
-                'date_until': '',
-                'results': []
-            }
-        ]
+            since = transform_date(data_crude['since'])
+            until = transform_date(data_crude['until'])
 
-        JSON_EXIT[0]['medium'] = data['source']
-        JSON_EXIT[0]['page_name'] = data_crude['page_name']
-        JSON_EXIT[0]['page_id'] = data_crude['page_id']
-        JSON_EXIT[0]['date_since'] = data_crude['since']
-        JSON_EXIT[0]['date_until'] = data_crude['until']
-
-        for day in rrule(DAILY, dtstart=since, until=until):
-            date_temp = day.strftime("%Y-%m-%d")
-            result_total_temp = {
-                'date': date_temp,
-                'comments': [],
-                'frequency_words': []
-            }
-            total_coments_by_day = ''
-            for result in data_crude['results']:
-                post_id = result['post_id']
-                post_name = result['post_name']
-                result_post_temp = {
-                    'post_id': post_id,
-                    'post_name': post_name,
+            clf = SentimentClassifier()
+            JSON_EXIT = [
+                {
+                    'medium': '',
+                    'page_name': '',
+                    'page_id': '',
+                    'date_since': '',
+                    'date_until': '',
                     'results': []
                 }
-                for comment in result['comments']:
-                    if comment['created_time'] == date_temp:
-                        comment_text = comment['comment_text']
-                        polarity = clf.predict(comment_text)
-                        comment_temp = {
-                            'comment_text': comment_text,
-                            'polarity': f'{polarity:.6f}'
-                        }
-                        result_post_temp['results'].append(comment_temp)
-                        total_coments_by_day += comment_text
+            ]
 
-                if len(result_post_temp['results']) > 0:
-                    result_total_temp['comments'].append(result_post_temp)
+            JSON_EXIT[0]['medium'] = data['source']
+            JSON_EXIT[0]['page_name'] = data_crude['page_name']
+            JSON_EXIT[0]['page_id'] = data_crude['page_id']
+            JSON_EXIT[0]['date_since'] = data_crude['since']
+            JSON_EXIT[0]['date_until'] = data_crude['until']
 
-            if total_coments_by_day != '':
-                for frecuency_words in get_frequency_words(clean_string(total_coments_by_day))[:50]:
-                    frecuency_words_temp = {
-                        'word': frecuency_words[0],
-                        'frequency': frecuency_words[1]
+            for day in rrule(DAILY, dtstart=since, until=until):
+                date_temp = day.strftime("%Y-%m-%d")
+                result_total_temp = {
+                    'date': date_temp,
+                    'comments': [],
+                    'frequency_words': []
+                }
+                total_coments_by_day = ''
+                for result in data_crude['results']:
+                    post_id = result['post_id']
+                    post_name = result['post_name']
+                    result_post_temp = {
+                        'post_id': post_id,
+                        'post_name': post_name,
+                        'results': []
                     }
-                    result_total_temp['frequency_words'].append(frecuency_words_temp)
+                    for comment in result['comments']:
+                        if comment['created_time'] == date_temp:
+                            comment_text = comment['comment_text']
+                            polarity = clf.predict(comment_text)
+                            comment_temp = {
+                                'comment_text': comment_text,
+                                'polarity': f'{polarity:.6f}'
+                            }
+                            result_post_temp['results'].append(comment_temp)
+                            total_coments_by_day += comment_text
 
-            if len(result_total_temp['comments']) > 0:
-                JSON_EXIT[0]['results'].append(result_total_temp)
+                    if len(result_post_temp['results']) > 0:
+                        result_total_temp['comments'].append(result_post_temp)
 
-        return Response(JSON_EXIT, status.HTTP_200_OK)
+                if total_coments_by_day != '':
+                    for frecuency_words in get_frequency_words(clean_string(total_coments_by_day))[:50]:
+                        frecuency_words_temp = {
+                            'word': frecuency_words[0],
+                            'frequency': frecuency_words[1]
+                        }
+                        result_total_temp['frequency_words'].append(frecuency_words_temp)
+
+                if len(result_total_temp['comments']) > 0:
+                    JSON_EXIT[0]['results'].append(result_total_temp)
+
+            return Response(JSON_EXIT, status.HTTP_200_OK)
+        else:
+            return Response({}, status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
 
