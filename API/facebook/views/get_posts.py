@@ -10,6 +10,7 @@ from .tools.token import Token
 response_crude = []
 thread_local = threading.local()
 
+
 def get_session():
     if not hasattr(thread_local, "session"):
         thread_local.session = requests_python.Session()
@@ -22,6 +23,7 @@ def download_site(url):
     with session.get(url) as response:
         temp = response.json()
         response_crude += temp['data']
+
 
 def replace_quotes(string):
     string = re.sub(r"“", '', string)
@@ -50,7 +52,6 @@ def get_comments(request):
                                  'since': '',
                                  'until': '',
                                  'results': []}]
-         
         if len(response_posts_json['data']) != 0:
             page_name = ''
             for post in response_posts_json['data']:
@@ -101,5 +102,5 @@ def get_comments(request):
 
 
         return Response(response_final_posts, status.HTTP_200_OK)
-    except Exception as e:
-        return Response({'Error': f'URL incorrecto: {e}'}, status.HTTP_400_BAD_REQUEST)
+    except:
+        return Response({}, status.HTTP_400_BAD_REQUEST)
