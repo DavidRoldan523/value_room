@@ -33,7 +33,7 @@ def get_all_reviews(hotel, language):
                                " ": "01-", }
     replace_in_reviews_rating = {"ui_bubble_rating bubble_": "",
                                  '0': '', }
-    page = webdriver.Chrome('static/chromedriver.exe')
+    page = webdriver.Chrome('static/chromedriver')
     page.get(hotel)
     sleep(2)
     # Click in the List of all Language

@@ -44,7 +44,8 @@ def get_comments(request):
         response_posts = requests_python.get(url_posts)
         response_posts_json = response_posts.json()
         response_final_posts = []
-        try:
+        if len(response_posts_json['data']) != 0:
+            page_name = ''
             for post in response_posts_json['data']:
                 try:
                     date_temp = post['timestamp'].split('T')
@@ -56,8 +57,8 @@ def get_comments(request):
                     response_final_posts.append(temp_post)
                 except Exception as e:
                     pass
-        except Exception as e:
-            return Response({'Response': f'No existe data en este rango de fechas: Desde: {since} Hasta: {until}'}, status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({}, status.HTTP_400_BAD_REQUEST)
         
 
         url_comments_list = []
