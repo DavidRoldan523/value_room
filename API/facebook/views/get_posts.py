@@ -78,7 +78,7 @@ def get_comments(request):
 
         url_comments_list = []
         for post in response_posts_json['data']:
-            url_temp = f"https://graph.facebook.com/v3.3/{post['id']}/comments" \
+            url_temp = f"https://graph.facebook.com/v4.0/{post['id']}/comments" \
                     f"?access_token={fb_token}" \
                     f"&fields=message,created_time&limit=500"
             url_comments_list.append(url_temp)
