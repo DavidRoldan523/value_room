@@ -41,7 +41,7 @@ def get_comments(request):
         since = request.data.get('since')
         until = request.data.get('until')
         fb_token = Token().get_fb_token()
-        url_posts = f"https://graph.facebook.com/v3.3/{page_id}/posts" \
+        url_posts = f"https://graph.facebook.com/v4.0/{page_id}/posts" \
                     f"?access_token={fb_token}" \
                     f"&fields=id,created_time,from,message" \
                     f"&since={since}&until={until}&limit=100"
