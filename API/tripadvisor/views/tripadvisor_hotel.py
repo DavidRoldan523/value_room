@@ -33,31 +33,26 @@ def get_all_reviews(hotel, language):
                                " ": "01-", }
     replace_in_reviews_rating = {"ui_bubble_rating bubble_": "",
                                  '0': '', }
-    replace_in_number_reviews = {"(": "",
-                                ")": "",
-                                ".": ""}
-    replace_in_review_text = {"\n": ". "}
     page = webdriver.Chrome('static/chromedriver.exe')
     page.get(hotel)
     sleep(2)
     # Click in the List of all Language
-    #page.execute_script("document.querySelector('.hotels-review-list-parts-LanguageFilter__taLnk--3iBfk').click();")
+    page.execute_script("document.querySelector('.hotels-review-list-parts-LanguageFilter__taLnk--3iBfk').click();")
     sleep(2)
     # Click in the Language selected
-    #page.execute_script(f"document.querySelector('input[value={language}]').click();")
+    page.execute_script(f"document.querySelector('input[value={language}]').click();")
     sleep(2)
 
     # Get data
     language_id = page.find_element_by_xpath(f'//input[@value="{language}"]').get_attribute('id')
-    destination_name = page.find_element_by_xpath('//h1[@id="HEADING"]').text
-    #total_reviews = page.find_element_by_xpath(f'//label[@for="{language_id}"]/span[@class="hotels-review-list-parts-LanguageFilter__paren_count--EHwQo"]').text
-    total_reviews = int(replace_all_in_string(page.find_element_by_css_selector('span.reviews_header_count').text, replace_in_number_reviews))
-    destination_rating = replace_all_in_string(page.find_element_by_css_selector('span[class^="ui_bubble_rating bubble_"]').get_attribute('class'), replace_in_reviews_rating)
-    stop_loop_for = int(page.find_element_by_css_selector('div.pageNumbers a.pageNum.last.taLnk').text)
-    #print(language_id, destination_name, total_reviews, destination_rating, stop_loop_for)
+    hotel_name = page.find_element_by_xpath('//h1[@id="HEADING"]').text
+    total_reviews = page.find_element_by_xpath(f'//label[@for="{language_id}"]/span[@class="hotels-review-list-parts-LanguageFilter__paren_count--EHwQo"]').text
+    hotel_rating = page.find_element_by_class_name('hotels-hotel-review-about-with-photos-Reviews__overallRating--vElGA').text
+    stop_loop_for = calculate_stop_reviews(total_reviews)
 
     url_remove_http = hotel.replace('https://www.tripadvisor.co', '')
     url_split = url_remove_http.split('-Reviews-')
+    print(stop_loop_for)
     # Extrac reviews for every Page
     for pagination in range(1, stop_loop_for):
         try:
@@ -65,57 +60,45 @@ def get_all_reviews(hotel, language):
             if pagination == 1:
                 # Click in "Read More"
                 #page.execute_script('document.querySelector(\'.hotels-review-list-parts-ExpandableReview__cta--3U9OU\').click();')
-                page.execute_script('document.querySelector("span.taLnk.ulBlueLinks").click();')
+                page.execute_script('document.querySelector(\'span[class^="hotels-review-list-parts-ExpandableReview__cta--"]\').click();')
                 sleep(2)
             else:
                 sleep(2)
+                click = (pagination - 1) * 5
+                href = url_split[0] + '-Reviews-or' + str(click) + '-' + url_split[1]
                 # Click in the next Page
-                page.execute_script("""
-                    var element = document.querySelector("div.unified.ui_pagination a.nav.next.taLnk.ui_button.primary");
-                    if(element){
-                        element.click();
-                    }
-                """)
+                page.execute_script(f"""document.querySelector('a[href="{href}"]').click();""")
                 sleep(4)
                 # Click in "Read More"
                 #page.execute_script("document.querySelector('.hotels-review-list-parts-ExpandableReview__cta--3U9OU').click();")
-                page.execute_script("""
-                    var element = document.querySelector("span.taLnk.ulBlueLinks");
-                    if(element){
-                        element.click();
-                    }
-                """)
+                page.execute_script('document.querySelector(\'span[class^="hotels-review-list-parts-ExpandableReview__cta--"]\').click();')
                 sleep(3)
 
             # Get all Reviews information
             #reviews = page.find_elements_by_xpath('//div[@class=""]/div/div[@class="hotels-hotel-review-community-content-Card__ui_card--3kTH_ hotels-hotel-review-community-content-Card__card--1MJgB hotels-hotel-review-community-content-Card__section--28b0a"]')
             #reviews = page.find_elements_by_xpath('//div[@data-test-target="reviews-tab"]')
-            reviews = page.find_elements_by_css_selector('div#REVIEWS div.listContainer div.review-container')
+            reviews = page.find_elements_by_css_selector('div[data-test-target="reviews-tab"] div[class^="hotels-community-tab-common-Card"]')
             reviews_count = 0
             for review in reviews:
-                try:
-                    review_dict = {
-                        'review_text': replace_all_in_string(review.find_element_by_css_selector('div.prw_rup.prw_reviews_text_summary_hsx div.entry p.partial_entry').text, replace_in_review_text),
-                        'review_author': review.find_element_by_css_selector('div.prw_rup.prw_reviews_member_info_resp div.member_info div div.info_text div').text,
-                        'review_date': review.find_element_by_css_selector('span.ratingDate').get_attribute('title'),
-                        'review_header': review.find_element_by_css_selector('div.quote').text,
-                        'review_rating': replace_all_in_string(review.find_element_by_css_selector('span[class^="ui_bubble_rating bubble_"]').get_attribute('class'), replace_in_reviews_rating),
-                    }
-                    #review_dict['review_date'] = review_dict['review_date'].replace(f'{review_dict["review_author"]} escribió una opinión el ', '')
-                    #print(review_dict)
-                    review_total_pages.append(review_dict)
-                    reviews_count += 1
-                except Exception as e:
-                    print(e, 'Error en review')
-                    print(pagination, review)
+                review_dict = {
+                    'review_text': review.find_element_by_css_selector('q[class^="hotels-review-list-parts-ExpandableReview__reviewText"]').text,
+                    'review_author': review.find_element_by_css_selector('a[class^="ui_header_link social-member-event-MemberEventOnObjectBlock__member"]').text,
+                    'review_date': review.find_element_by_css_selector('div[class^="social-member-event-MemberEventOnObjectBlock__event_type"]').text,
+                    'review_header': review.find_element_by_css_selector('div[class^="hotels-review-list-parts-ReviewTitle__reviewTitle"]').text,
+                    'review_rating': replace_all_in_string(review.find_element_by_css_selector('div[class^="hotels-review-list-parts-RatingLine__bubbles"] span').get_attribute('class'), replace_in_reviews_rating),
+                }
+                review_dict['review_date'] = review_dict['review_date'].replace(f'{review_dict["review_author"]} escribió una opinión el ', '')
+                #print(review_dict)
+                review_total_pages.append(review_dict)
+                reviews_count += 1
         except Exception as e:
             print(e, 'No llego a la ultima página')
 
     page.quit()
     data = {
-        'destination_name': destination_name,
+        'hotel_name': hotel_name,
         'total_reviews': total_reviews,
-        'ratings': destination_rating,
+        'ratings': hotel_rating,
         'language': language,
         'reviews': review_total_pages,
     }

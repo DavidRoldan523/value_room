@@ -1,0 +1,6 @@
+https://www.tripadvisor.co/Hotel_Review-g297476-d307529-Reviews-Decameron_Cartagena-Cartagena_Cartagena_District_Bolivar_Department.html
+https://mahadev001.github.io/Mahadev-Upadhyayula/Sentiment%20Analysis%20via%20NLP/Sentiment%20Analysis%20using%20NLP%20with%20Spacy%20and%20%20SVM.html
+https://ep2018.europython.eu/conference/talks/introduction-to-sentiment-analysis-with-spacy
+
+http://www.nltk.org/howto/portuguese_en.html
+https://pypi.org/project/stop-words/
